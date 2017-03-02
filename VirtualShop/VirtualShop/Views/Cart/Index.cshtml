@@ -1,0 +1,40 @@
+﻿@model IEnumerable<VirtualShop.Models.Order>
+
+@{
+    ViewBag.Title = "Detalles de Compra";
+}
+
+<br />
+<h1>Detalles de Compra (Carrito)</h1>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Línea de Pedido</th>
+                    <th>Usuario</th>
+                    <th>ID Libro</th>
+                    <th>Cantidad</th>
+                    <th>Coste</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int index = 1;}
+                @foreach (var item in Model)
+                {
+                    <tr class="active">
+                        <td>@index</td>
+                        <td>@Html.DisplayFor(modelItem => item.user)</td>
+                        <td>@Html.DisplayFor(modelItem => item.book)</td>
+                        <td>@Html.DisplayFor(modelItem => item.quantity)</td>
+                        <td>@Html.DisplayFor(modelItem => item.price)€</td>
+                    </tr>
+
+                    index++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@Html.ActionLink("Realizar Pedido", "MakeOrder", "Cart")
