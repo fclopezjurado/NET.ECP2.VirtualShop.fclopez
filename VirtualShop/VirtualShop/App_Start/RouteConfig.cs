@@ -18,6 +18,12 @@ namespace VirtualShop
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+                name: "AddToCart",
+                url: "{controller}/{action}/{book}/{price}",
+                defaults: new { controller = "Cart", action = "AddToCart"}
+            );
         }
     }
 }
