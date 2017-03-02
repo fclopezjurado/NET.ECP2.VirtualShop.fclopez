@@ -66,7 +66,7 @@ namespace VirtualShop.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(User user, Cart cart, LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -79,6 +79,10 @@ namespace VirtualShop.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    user.Email      = model.Email;
+                    user.Password   = model.Password;
+
+                    cart.Clear();
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -147,7 +151,7 @@ namespace VirtualShop.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(User sessionUser, Cart cart, RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -156,13 +160,17 @@ namespace VirtualShop.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
+                    sessionUser.Email       = model.Email;
+                    sessionUser.Password    = model.Password;
+
+                    cart.Clear();
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -389,8 +397,11 @@ namespace VirtualShop.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public ActionResult LogOff(User user, Cart cart)
         {
+            user = null;
+            cart.Clear();
+
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }

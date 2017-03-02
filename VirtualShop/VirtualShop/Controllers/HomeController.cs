@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
+using VirtualShop.Models;
 
 namespace VirtualShop.Controllers
 {
     public class HomeController : Controller
     {
+        private virtualshopEntities db = new virtualshopEntities();
+
         public ActionResult Index()
         {
-            return View();
+            return View(db.Books.ToList());
         }
 
         public ActionResult About()
